@@ -14,6 +14,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 
 /*
@@ -80,7 +81,25 @@ public class ObservableActivity extends AppCompatActivity {
         };
         observable.subscribe(observer);
 
+        // 옵저버 등록 2번 형태 - 람다식을 사용하기 전 상태로 함수 하나씩 분리
+        Consumer<String> onNext = new Consumer<String>() {
+            @Override
+            public void accept(String str) {
+                Log.e("OnNext","============="+str);
+            }
+        };
+        Consumer<Throwable> onError = new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) {
+            }
+        };
 
+        // 옵저버 등록 3번 형태 - 람다식으로
+        observable.subscribe(
+                str  -> Log.e("onNext", "======================="+str),
+                throwable  -> Log.e("onError", "======================="+throwable.getMessage()),
+                ()  -> Log.e("onComplete", "======================= complete")
+        );
 
     }
 }
