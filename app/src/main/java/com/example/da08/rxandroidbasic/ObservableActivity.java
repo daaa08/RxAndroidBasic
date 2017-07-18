@@ -1,7 +1,10 @@
 package com.example.da08.rxandroidbasic;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -10,6 +13,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 
 /*
@@ -28,6 +32,7 @@ public class ObservableActivity extends AppCompatActivity {
     }
 
 
+    // 옵저버블 생성
     private void createObservable(){
 
 //        Observable.create(new ObservableOnSubscribe<String>() {
@@ -39,7 +44,7 @@ public class ObservableActivity extends AppCompatActivity {
 //            }
 //        });
 
-        // 위의 내요을 람다식으로 바꿈
+        // 위의 내용을 람다식으로 바꿈
         observable = observable.create(emitter -> {
             emitter.onNext("Hellr Rx");
             emitter.onNext("Yoyo");
@@ -47,29 +52,35 @@ public class ObservableActivity extends AppCompatActivity {
         });
     }
 
-    // 옵저버 등록
+    // 옵저버 등록 1번 형태 - 안에 4개의 함수가 구현되어 있음
+    @TargetApi(Build.VERSION_CODES.M)
     private void bindObserver(){
-        Subscriber<String> subscriber = new Subscriber<String>() {
-
+        Observer<String> observer = new Observer<String>() {
             @Override
-            public void onSubscribe(Subscription s) {
+            public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(String s) {
+            public void onNext(String value) {   // notify에 해당 , observable의 onNext이 생성될때마다 호출
+                Log.e("onNext", "======================="+value);
 
             }
 
             @Override
-            public void onError(Throwable t) {
+            public void onError(Throwable e) {
+                Log.e("onError", "======================="+e.getMessage());
 
             }
 
             @Override
-            public void onComplete() {
-
+            public void onComplete() {    // 완료
+                Log.e("onComplete", "======================= complete");
             }
         };
+        observable.subscribe(observer);
+
+
+
     }
 }
